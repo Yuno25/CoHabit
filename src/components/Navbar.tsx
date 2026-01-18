@@ -20,7 +20,8 @@ export default function Navbar() {
   const [isAuthed, setIsAuthed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const user = { name: "Your Name" };
+  // ✅ FIX: real user state
+  const [user, setUser] = useState<{ name?: string } | null>(null);
 
   /* ---------- Outside Click Handling ---------- */
   useEffect(() => {
@@ -37,13 +38,31 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  /* ---------- Fetch User ---------- */
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("/api/user/profile");
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data);
+      }
+    } catch {
+      // silent fail
+    }
+  };
+
   /* ---------- Auth Sync ---------- */
   useEffect(() => {
     const syncAuth = () => {
-      setIsAuthed(!!localStorage.getItem("token"));
+      const authed = !!localStorage.getItem("token");
+      setIsAuthed(authed);
+
+      if (authed) fetchUser();
+      else setUser(null);
     };
 
     syncAuth();
+
     window.addEventListener("auth-change", syncAuth);
     window.addEventListener("storage", syncAuth);
 
@@ -99,7 +118,6 @@ export default function Navbar() {
                 className="hover:opacity-80 flex items-center"
                 aria-label="Search"
               >
-                {/* Outlined magnifying glass */}
                 <svg
                   width="18"
                   height="18"
@@ -116,16 +134,7 @@ export default function Navbar() {
               </button>
 
               {searchOpen && (
-                <div
-                  className="
-                    absolute top-10 left-0
-                    w-52 rounded-xl
-                    backdrop-blur-lg bg-white/70
-                    border border-white/30
-                    shadow-lg
-                    overflow-hidden
-                  "
-                >
+                <div className="absolute top-10 left-0 w-52 rounded-xl backdrop-blur-lg bg-white/70 border border-white/30 shadow-lg overflow-hidden">
                   <SearchItem
                     title="Search by Locality"
                     subtitle="Area, city or neighborhood"
@@ -144,7 +153,7 @@ export default function Navbar() {
               Home
             </Link>
 
-            {/* USER TYPE DROPDOWN (UNCHANGED) */}
+            {/* USER TYPE */}
             <div ref={dropdownRef} className="relative">
               <button
                 onClick={() => setOpen((v) => !v)}
@@ -154,16 +163,7 @@ export default function Navbar() {
               </button>
 
               {open && (
-                <div
-                  className="
-                    absolute top-10 left-0
-                    w-56 rounded-xl
-                    backdrop-blur-lg bg-white/70
-                    border border-white/30
-                    shadow-lg
-                    overflow-hidden
-                  "
-                >
+                <div className="absolute top-10 left-0 w-56 rounded-xl backdrop-blur-lg bg-white/70 border border-white/30 shadow-lg overflow-hidden">
                   <DropdownItem
                     title="Looking for a place"
                     subtitle="Find rooms & compatible roommates"
@@ -206,7 +206,7 @@ export default function Navbar() {
               onClick={() => setSidebarOpen(true)}
               className="w-10 h-10 rounded-full bg-pine text-blush flex items-center justify-center font-semibold"
             >
-              {getInitials(user.name)}
+              {getInitials(user?.name)}
             </button>
           )}
         </div>
@@ -229,17 +229,12 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 260, damping: 30 }}
-              className="
-                fixed top-0 right-0 z-50
-                h-full w-72
-                backdrop-blur-lg bg-white/70
-                border-l border-white/30
-                p-6
-                flex flex-col
-              "
+              className="fixed top-0 right-0 z-50 h-full w-72 backdrop-blur-lg bg-white/70 border-l border-white/30 p-6 flex flex-col"
             >
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-pine">{user.name}</h2>
+                <h2 className="text-lg font-semibold text-pine">
+                  {user?.name || "Your Name"}
+                </h2>
                 <p className="text-sm text-pine/70">Welcome back</p>
               </div>
 
