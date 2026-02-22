@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/db";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -26,13 +27,34 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    const user = await User.create({
       name,
       email,
       password: hashedPassword,
     });
 
-    return NextResponse.json({ message: "Signup successful" });
+    // Same payload structure as login
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+      expiresIn: "7d",
+    });
+
+    const response = NextResponse.json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+    });
+
+    return response;
   } catch (error) {
     console.error("Signup error:", error);
     return NextResponse.json(

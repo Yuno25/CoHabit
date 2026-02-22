@@ -1,5 +1,10 @@
-import Navbar from "@/components/Navbar";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+
+export const metadata = {
+  title: "CoHabit",
+  description: "Find your perfect roommate match",
+};
 
 export default function RootLayout({
   children,
@@ -7,10 +12,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
         <Navbar />
-        <main className="pt-16">{children}</main>
+        {children}
       </body>
     </html>
   );

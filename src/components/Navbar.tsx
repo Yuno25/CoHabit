@@ -8,63 +8,77 @@ import { AnimatePresence, motion } from "framer-motion";
 export default function Navbar() {
   const router = useRouter();
 
-  // User Type dropdown
+  // Dropdown states
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Search dropdown
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Auth + sidebar
+  // Auth and sidebar state
   const [isAuthed, setIsAuthed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // ✅ FIX: real user state
+  // Logged in user
   const [user, setUser] = useState<{ name?: string } | null>(null);
 
-  /* ---------- Outside Click Handling ---------- */
+  /* Close dropdowns when clicking outside */
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(e.target as Node)
-      )
+      ) {
         setOpen(false);
-      if (searchRef.current && !searchRef.current.contains(e.target as Node))
+      }
+
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setSearchOpen(false);
+      }
     };
+
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  /* ---------- Fetch User ---------- */
+  /* Fetch user using cookie session */
   const fetchUser = async () => {
     try {
-      const res = await fetch("/api/user/profile");
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data);
+      const res = await fetch("/api/user/profile", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        setUser(null);
+        setIsAuthed(false);
+        return;
+      }
+
+      const data = await res.json();
+
+      if (data.success && data.user) {
+        setUser(data.user);
+        setIsAuthed(true);
+      } else {
+        setUser(null);
+        setIsAuthed(false);
       }
     } catch {
-      // silent fail
+      setUser(null);
+      setIsAuthed(false);
     }
   };
 
-  /* ---------- Auth Sync ---------- */
+  /* Sync auth on mount and when login/logout happens */
   useEffect(() => {
-    const syncAuth = () => {
-      const authed = !!localStorage.getItem("token");
-      setIsAuthed(authed);
+    fetchUser();
 
-      if (authed) fetchUser();
-      else setUser(null);
+    const handleAuthChange = () => {
+      fetchUser();
     };
 
-    syncAuth();
-
-    window.addEventListener("auth-change", syncAuth);
-    window.addEventListener("storage", syncAuth);
+    window.addEventListener("auth-change", handleAuthChange);
 
     const esc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -73,45 +87,51 @@ export default function Navbar() {
         setOpen(false);
       }
     };
+
     document.addEventListener("keydown", esc);
 
     return () => {
-      window.removeEventListener("auth-change", syncAuth);
-      window.removeEventListener("storage", syncAuth);
+      window.removeEventListener("auth-change", handleAuthChange);
       document.removeEventListener("keydown", esc);
     };
   }, []);
 
+  /* Navigate user type */
   const handleUserType = (type: string) => {
     setOpen(false);
     router.push(`/user-type?type=${type}`);
   };
 
+  /* Navigate search */
   const handleSearch = (mode: "locality" | "college") => {
     setSearchOpen(false);
     router.push(`/search?by=${mode}`);
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
+  /* Logout and clear session */
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch {}
+
     window.dispatchEvent(new Event("auth-change"));
+
     setSidebarOpen(false);
     router.push("/");
   };
 
   return (
     <>
-      {/* NAVBAR */}
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/60 border-b border-white/20">
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-          {/* LOGO */}
           <Link href="/" className="font-semibold text-pine">
             CoHabit
           </Link>
 
-          {/* CENTER */}
           <div className="hidden md:flex items-center gap-6 text-sm text-pine relative">
-            {/* SEARCH ICON */}
             <div ref={searchRef} className="relative">
               <button
                 onClick={() => setSearchOpen((v) => !v)}
@@ -153,7 +173,6 @@ export default function Navbar() {
               Home
             </Link>
 
-            {/* USER TYPE */}
             <div ref={dropdownRef} className="relative">
               <button
                 onClick={() => setOpen((v) => !v)}
@@ -188,7 +207,6 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* RIGHT */}
           {!isAuthed ? (
             <div className="flex items-center gap-4 text-sm">
               <Link href="/login" className="hover:opacity-80">
@@ -206,13 +224,12 @@ export default function Navbar() {
               onClick={() => setSidebarOpen(true)}
               className="w-10 h-10 rounded-full bg-pine text-blush flex items-center justify-center font-semibold"
             >
-              {getInitials(user?.name)}
+              {getInitial(user?.name)}
             </button>
           )}
         </div>
       </nav>
 
-      {/* SIDEBAR */}
       <AnimatePresence>
         {sidebarOpen && (
           <>
@@ -269,8 +286,10 @@ export default function Navbar() {
   );
 }
 
-/* ---------- EXISTING COMPONENTS (UNCHANGED) ---------- */
-
+function getInitial(name?: string) {
+  if (!name) return "U";
+  return name.trim().charAt(0).toUpperCase();
+}
 function DropdownItem({
   title,
   subtitle,
@@ -326,10 +345,4 @@ function SidebarItem({
       {label}
     </button>
   );
-}
-
-function getInitials(name?: string) {
-  if (!name) return "U";
-  const parts = name.split(" ");
-  return parts.length > 1 ? parts[0][0] + parts[1][0] : parts[0][0];
 }
