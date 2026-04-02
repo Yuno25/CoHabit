@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 
 const images = [
-  "/hero/roommate-1.jpg",
-  "/hero/roommate-2.jpg",
-  "/hero/roommate-3.jpg",
-  "/hero/roommate-4.jpg",
+  "/hero/roommate-1.png",
+  "/hero/roommate-2.png",
+  "/hero/roommate-3.png",
+  "/hero/roommate-4.png",
 ];
 
 export default function HeroSlider() {
@@ -15,7 +15,7 @@ export default function HeroSlider() {
   useEffect(() => {
     const slider = setInterval(() => {
       setCurrent((prev) => (prev + 1) % images.length);
-    }, 4000);
+    }, 6000);
 
     return () => clearInterval(slider);
   }, []);

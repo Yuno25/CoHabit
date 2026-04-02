@@ -4,13 +4,38 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret"; // ✅ FIX
+
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json();
+    const { name, email, password, confirmPassword, dob, contact, gender } =
+      await req.json();
 
-    if (!name || !email || !password) {
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !dob ||
+      !contact ||
+      !gender
+    ) {
       return NextResponse.json(
         { error: "All fields are required" },
+        { status: 400 },
+      );
+    }
+
+    if (password !== confirmPassword) {
+      return NextResponse.json(
+        { error: "Passwords do not match" },
+        { status: 400 },
+      );
+    }
+
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: "Password must be at least 6 characters" },
         { status: 400 },
       );
     }
@@ -29,14 +54,22 @@ export async function POST(req: Request) {
 
     const user = await User.create({
       name,
+      username: name, // ✅ IMPORTANT FIX
       email,
       password: hashedPassword,
+      dob,
+      contact,
+      gender,
     });
 
-    // Same payload structure as login
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        username: user.username, // ✅ now valid
+      },
+      JWT_SECRET,
+      { expiresIn: "7d" },
+    );
 
     const response = NextResponse.json({
       success: true,

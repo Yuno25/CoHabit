@@ -125,17 +125,27 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/60 border-b border-white/20">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="font-semibold text-pine">
-            CoHabit
-          </Link>
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/70 border-b border-white/20 transition-all duration-300">
+        <div className="w-full px-6 py-3 flex items-center">
+          {/* LEFT */}
+          <div className="flex-1 flex items-center">
+            <Link
+              href="/"
+              className="font-semibold text-pine text-lg tracking-wide 
+        transition-all duration-300 ease-in-out 
+        hover:scale-105 hover:text-rose cursor-pointer"
+            >
+              CoHabit
+            </Link>
+          </div>
 
-          <div className="hidden md:flex items-center gap-6 text-sm text-pine relative">
+          {/* CENTER */}
+          <div className="hidden md:flex items-center gap-8 text-sm text-pine relative">
+            {/* SEARCH */}
             <div ref={searchRef} className="relative">
               <button
                 onClick={() => setSearchOpen((v) => !v)}
-                className="hover:opacity-80 flex items-center"
+                className="flex items-center transition-all duration-300 hover:scale-110 hover:text-rose"
                 aria-label="Search"
               >
                 <svg
@@ -154,7 +164,7 @@ export default function Navbar() {
               </button>
 
               {searchOpen && (
-                <div className="absolute top-10 left-0 w-52 rounded-xl backdrop-blur-lg bg-white/70 border border-white/30 shadow-lg overflow-hidden">
+                <div className="absolute top-12 left-0 w-56 rounded-2xl backdrop-blur-xl bg-white/80 border border-white/30 shadow-xl overflow-hidden">
                   <SearchItem
                     title="Search by Locality"
                     subtitle="Area, city or neighborhood"
@@ -169,20 +179,24 @@ export default function Navbar() {
               )}
             </div>
 
-            <Link href="/" className="hover:opacity-80">
+            {/* LINKS */}
+            <Link
+              href="/"
+              className="flex items-center transition-all duration-300 hover:scale-110 hover:text-rose"
+            >
               Home
             </Link>
 
             <div ref={dropdownRef} className="relative">
               <button
                 onClick={() => setOpen((v) => !v)}
-                className="hover:opacity-80 flex items-center gap-1"
+                className="flex items-center transition-all duration-300 hover:scale-110 hover:text-rose"
               >
                 User Type <span className="text-xs">▾</span>
               </button>
 
               {open && (
-                <div className="absolute top-10 left-0 w-56 rounded-xl backdrop-blur-lg bg-white/70 border border-white/30 shadow-lg overflow-hidden">
+                <div className="absolute top-12 left-0 w-56 rounded-2xl backdrop-blur-xl bg-white/80 border border-white/30 shadow-xl overflow-hidden">
                   <DropdownItem
                     title="Looking for a place"
                     subtitle="Find rooms & compatible roommates"
@@ -202,31 +216,43 @@ export default function Navbar() {
               )}
             </div>
 
-            <Link href="/terms" className="hover:opacity-80">
+            <Link
+              href="/terms"
+              className="flex items-center transition-all duration-300 hover:scale-110 hover:text-rose"
+            >
               Terms
             </Link>
           </div>
 
-          {!isAuthed ? (
-            <div className="flex items-center gap-4 text-sm">
-              <Link href="/login" className="hover:opacity-80">
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                className="bg-pine text-blush px-4 py-1.5 rounded-md hover:bg-wine transition"
+          {/* RIGHT */}
+          <div className="flex-1 flex justify-end items-center">
+            {!isAuthed ? (
+              <div className="flex items-center gap-5 text-sm">
+                <Link
+                  href="/login"
+                  className="transition-all duration-300 hover:scale-105 hover:text-rose"
+                >
+                  Login
+                </Link>
+
+                <Link
+                  href="/signup"
+                  className="bg-red-950 text-white px-4 py-1.5 rounded-md hover:bg-wine transition"
+                >
+                  Sign up
+                </Link>
+              </div>
+            ) : (
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="w-10 h-10 rounded-full bg-wine text-blush flex items-center justify-center font-semibold
+          transition-all duration-300 ease-in-out
+          hover:scale-110 hover:ring-2 hover:ring-rose hover:shadow-lg"
               >
-                Sign up
-              </Link>
-            </div>
-          ) : (
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="w-10 h-10 rounded-full bg-pine text-blush flex items-center justify-center font-semibold"
-            >
-              {getInitial(user?.name)}
-            </button>
-          )}
+                {getInitial(user?.name)}
+              </button>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -257,10 +283,10 @@ export default function Navbar() {
 
               <nav className="flex-1 space-y-3">
                 <SidebarItem
-                  label="Edit Profile"
+                  label="My Profile"
                   onClick={() => {
                     setSidebarOpen(false);
-                    router.push("/account");
+                    router.push("/profile-setup");
                   }}
                 />
                 <SidebarItem

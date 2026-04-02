@@ -3,81 +3,143 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ProfileSetupPage() {
+export default function ProfileSetup() {
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
+    name: "",
+    city: "",
     bio: "",
-    college: "",
+    age: "",
+    gender: "",
     locality: "",
+    budget: "",
+    smoking: "",
+    drinking: "",
+    pets: "",
+    sleepSchedule: "",
+    cleanliness: "",
   });
 
   const handleChange = (e: any) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-
+  const saveProfile = async () => {
     const res = await fetch("/api/user/profile", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(formData),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
     });
 
     const data = await res.json();
 
     if (data.success) {
-      router.push("/");
-    } else {
-      alert("Failed to update profile");
+      window.dispatchEvent(new Event("auth-change"));
+      router.push("/welcome");
     }
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-blush text-pine">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl shadow-md space-y-4 w-80"
-      >
-        <h1 className="text-xl font-semibold text-center">
-          Complete Your Profile
-        </h1>
+    <div className="min-h-screen bg-blush pt-24 pb-20 px-6">
+      <div className="max-w-3xl mx-auto space-y-8">
+        {/* PROFILE CARD */}
+        <div className="bg-white rounded-2xl shadow p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-pine">Profile</h2>
 
-        <input
-          type="text"
-          name="bio"
-          placeholder="Bio"
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
+          <input
+            name="name"
+            placeholder="Your Name"
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg"
+          />
 
-        <input
-          type="text"
-          name="college"
-          placeholder="College"
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
+          <input
+            name="city"
+            placeholder="Your City"
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg"
+          />
 
-        <input
-          type="text"
-          name="locality"
-          placeholder="Locality"
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
+          <textarea
+            name="bio"
+            placeholder="Tell people a little about yourself"
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg"
+          />
+        </div>
 
-        <button type="submit" className="w-full bg-pine text-white p-2 rounded">
+        {/* LIFESTYLE */}
+        <div className="bg-white rounded-2xl shadow p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-pine">Lifestyle</h2>
+
+          <select name="smoking" onChange={handleChange} className="input">
+            <option>Smoking</option>
+            <option>No</option>
+            <option>Occasionally</option>
+            <option>Yes</option>
+          </select>
+
+          <select name="drinking" onChange={handleChange} className="input">
+            <option>Drinking</option>
+            <option>No</option>
+            <option>Occasionally</option>
+            <option>Yes</option>
+          </select>
+
+          <select name="pets" onChange={handleChange} className="input">
+            <option>Pets</option>
+            <option>No</option>
+            <option>Yes</option>
+          </select>
+
+          <select
+            name="sleepSchedule"
+            onChange={handleChange}
+            className="input"
+          >
+            <option>Sleep Schedule</option>
+            <option>Early Bird</option>
+            <option>Night Owl</option>
+          </select>
+
+          <select name="cleanliness" onChange={handleChange} className="input">
+            <option>Cleanliness</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+        </div>
+
+        {/* HOUSING */}
+        <div className="bg-white rounded-2xl shadow p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-pine">
+            Housing Preferences
+          </h2>
+
+          <input
+            name="locality"
+            placeholder="Preferred Locality"
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg"
+          />
+
+          <input
+            name="budget"
+            placeholder="Monthly Budget"
+            onChange={handleChange}
+            className="w-full p-3 border rounded-lg"
+          />
+        </div>
+
+        {/* SAVE BUTTON */}
+        <button
+          onClick={saveProfile}
+          className="w-full bg-wine text-blush py-3 rounded-xl font-semibold hover:bg-pine transition"
+        >
           Save Profile
         </button>
-      </form>
-    </main>
+      </div>
+    </div>
   );
 }

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-[#2a0101] to-[#290606] text-gray-200 border-t border-white/10">
+    <footer className="bg-gradient-to-b from-[#2f0808] to-[#2f0808] text-gray-200 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 py-14">
         {/* Top Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">

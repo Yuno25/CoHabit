@@ -15,26 +15,31 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      setError(data.error || "Login failed");
+      if (!res.ok) {
+        setError(data.error || "Login failed");
+        setLoading(false);
+        return;
+      }
+
+      // ✅ IMPORTANT: trigger navbar update
+      window.dispatchEvent(new Event("auth-change"));
+
+      // ✅ Redirect
+      router.replace("/welcome/back");
+    } catch {
+      setError("Something went wrong");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    // ✅ AUTH SUCCESS
-    localStorage.setItem("token", data.token);
-    window.dispatchEvent(new Event("auth-change"));
-
-    // ✅ GO TO WELCOME (NOT ACCOUNT)
-    router.replace("/welcome/back");
   };
 
   return (

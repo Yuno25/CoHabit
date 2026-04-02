@@ -11,5 +11,49 @@ body {
 body {
   background-color: #ffd9d9; /* blush */
   color: #102b1f; /* pine */
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+}
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: 0.2s;
+}
+
+.input:focus {
+  border-color: #14532d;
+  box-shadow: 0 0 0 2px rgba(20, 83, 45, 0.1);
+}
+@keyframes dividerTop {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: 50%;
+  }
+}
+
+@keyframes dividerBottom {
+  0% {
+    height: 0;
+  }
+  100% {
+    height: 50%;
+  }
+}
+
+.animate-divider-top {
+  height: 0;
+  animation: dividerTop 0.8s ease forwards;
+}
+
+.animate-divider-bottom {
+  height: 0;
+  animation: dividerBottom 0.8s ease forwards;
 }

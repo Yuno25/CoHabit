@@ -1,5 +1,7 @@
 "use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import HeroBackground from "@/components/HeroBackground";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
@@ -23,6 +25,7 @@ const staggerContainer = {
 };
 
 export default function Home() {
+  const router = useRouter();
   return (
     <main className="min-h-screen bg-blush text-pine">
       {/* HERO SECTION */}
@@ -55,13 +58,14 @@ export default function Home() {
             variants={fadeUp}
             className="mt-8 flex justify-center gap-4"
           >
-            <button className="px-8 py-3 bg-red-950 hover:bg-red-900 text-white rounded-lg transition">
+            <button className="px-8 py-3 bg-wine hover:bg-rose text-blush rounded-lg transition">
               Join CoHabit
             </button>
-
-            <button className="px-8 py-3 border border-white text-white rounded-lg hover:bg-white hover:text-black transition">
-              Learn More
-            </button>
+            <Link href="/questionnaire">
+              <button className="px-6 py-3 border border-white/30 text-white rounded-xl backdrop-blur-md hover:bg-white/10 transition">
+                Let’s Know You More
+              </button>
+            </Link>
           </motion.div>
         </motion.div>
       </section>
@@ -86,46 +90,62 @@ export default function Home() {
             viewport={{ once: false }}
             className="grid md:grid-cols-3 gap-10"
           >
+            {/* CARD */}
             <motion.div
               variants={fadeUp}
-              whileHover={{ y: -10, scale: 1.05 }}
-              className="group relative bg-rose h-40 p-8 rounded-xl cursor-pointer overflow-hidden shadow-md"
+              whileHover={{ y: -8, scale: 1.05 }}
+              className="group cursor-pointer"
             >
-              <h3 className="text-xl font-semibold relative z-10">
-                1. Create Your Profile
-              </h3>
+              <div
+                className="bg-rose px-6 py-4 rounded-xl 
+shadow-[0_10px_25px_rgba(0,0,0,0.15)] 
+transition-all duration-300 
+group-hover:bg-rose 
+group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.25)] 
+group-hover:-translate-y-2"
+              >
+                <h3 className="text-xl font-semibold text-black text-center">
+                  1. Create Your Profile
+                </h3>
 
-              <p className="absolute left-8 right-8 bottom-6 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                Tell us about your habits, routine, and preferences.
-              </p>
+                <p className="text-sm text-black text-center mt-3 opacity-0 max-h-0 overflow-hidden transition-all duration-300 group-hover:opacity-100 group-hover:max-h-32">
+                  Tell us about your habits, routine, and preferences.
+                </p>
+              </div>
             </motion.div>
 
+            {/* CARD */}
             <motion.div
               variants={fadeUp}
-              whileHover={{ y: -10, scale: 1.05 }}
-              className="group relative bg-rose h-40 p-8 rounded-xl cursor-pointer overflow-hidden shadow-md"
+              whileHover={{ y: -8, scale: 1.05 }}
+              className="group cursor-pointer"
             >
-              <h3 className="text-xl font-semibold relative z-10">
-                2. Get Matched
-              </h3>
+              <div className="bg-rose px-6 py-4 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-all duration-300 group-hover:bg-rose group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.25)] group-hover:-translate-y-2">
+                <h3 className="text-xl font-semibold text-black text-center">
+                  2. Get Matched
+                </h3>
 
-              <p className="absolute left-8 right-8 bottom-6 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                We calculate compatibility with others like you.
-              </p>
+                <p className="text-sm text-black text-center mt-3 opacity-0 max-h-0 overflow-hidden transition-all duration-300 group-hover:opacity-100 group-hover:max-h-32">
+                  Our algorithm finds people with compatible lifestyles.
+                </p>
+              </div>
             </motion.div>
 
+            {/* CARD */}
             <motion.div
               variants={fadeUp}
-              whileHover={{ y: -10, scale: 1.05 }}
-              className="group relative bg-rose h-40 p-8 rounded-xl cursor-pointer overflow-hidden shadow-md"
+              whileHover={{ y: -8, scale: 1.05 }}
+              className="group cursor-pointer"
             >
-              <h3 className="text-xl font-semibold relative z-10">
-                3. Connect Safely
-              </h3>
+              <div className="bg-rose px-6 py-4 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-all duration-300 group-hover:bg-rose group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.25)] group-hover:-translate-y-2">
+                <h3 className="text-xl font-semibold text-black text-center">
+                  3. Connect Safely
+                </h3>
 
-              <p className="absolute left-8 right-8 bottom-6 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                Chat only after mutual interest. No spam.
-              </p>
+                <p className="text-sm text-black text-center mt-3 opacity-0 max-h-0 overflow-hidden transition-all duration-300 group-hover:opacity-100 group-hover:max-h-32">
+                  Chat only when both users show interest.
+                </p>
+              </div>
             </motion.div>
           </motion.div>
         </div>
@@ -151,53 +171,43 @@ export default function Home() {
             viewport={{ once: false }}
             className="grid md:grid-cols-3 gap-10"
           >
-            <motion.div
-              variants={fadeUp}
-              whileHover={{ y: -10, scale: 1.05 }}
-              className="group relative bg-[#b87477] h-40 p-8 rounded-xl cursor-pointer overflow-hidden shadow-md"
-            >
-              <h3 className="text-xl font-semibold text-green-950 relative z-10">
-                Compatibility First
-              </h3>
+            {[
+              {
+                title: "Compatibility First",
+                desc: "No random matches. Only people who fit your lifestyle.",
+              },
+              {
+                title: "Student Friendly",
+                desc: "Built for students and young professionals.",
+              },
+              {
+                title: "Privacy Focused",
+                desc: "Connect only when both sides agree.",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                variants={fadeUp}
+                whileHover={{ y: -8, scale: 1.05 }}
+                className="group cursor-pointer"
+              >
+                <div className="bg-rose px-6 py-4 rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.15)] transition-all duration-300 group-hover:bg-rose group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.25)] group-hover:-translate-y-2">
+                  <h3 className="text-xl font-semibold text-black text-center">
+                    {item.title}
+                  </h3>
 
-              <p className="absolute left-8 right-8 bottom-6 text-green-950 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                No random matches. Only people who fit your lifestyle.
-              </p>
-            </motion.div>
-
-            <motion.div
-              variants={fadeUp}
-              whileHover={{ y: -10, scale: 1.05 }}
-              className="group relative bg-[#b87477] h-40 p-8 rounded-xl cursor-pointer overflow-hidden shadow-md"
-            >
-              <h3 className="text-xl font-semibold text-green-950 relative z-10">
-                Student Friendly
-              </h3>
-
-              <p className="absolute left-8 right-8 bottom-6 text-green-950 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                Built specifically for college and early career life.
-              </p>
-            </motion.div>
-
-            <motion.div
-              variants={fadeUp}
-              whileHover={{ y: -10, scale: 1.05 }}
-              className="group relative bg-[#b87477] h-40 p-8 rounded-xl cursor-pointer overflow-hidden shadow-md"
-            >
-              <h3 className="text-xl font-semibold text-green-950 relative z-10">
-                Privacy Focused
-              </h3>
-
-              <p className="absolute left-8 right-8 bottom-6 text-green-950 opacity-0 translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                Connect only when both sides agree.
-              </p>
-            </motion.div>
+                  <p className="text-sm text-black text-center mt-3 opacity-0 max-h-0 overflow-hidden transition-all duration-300 group-hover:opacity-100 group-hover:max-h-32">
+                    {item.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
 
       {/* FINAL CTA */}
-      <section className="bg-red-950 text-blush py-16 text-center">
+      <section className="bg-gradient-to-b from-[#3d0606] to-[#350707] text-blush py-16 text-center">
         <motion.h2
           variants={fadeUp}
           initial="hidden"

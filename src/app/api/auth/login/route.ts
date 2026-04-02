@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret"; // ✅ FIX
+
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
@@ -26,10 +28,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // Standardized JWT payload
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        username: user.username, // ✅ REQUIRED
+      },
+      JWT_SECRET,
+      { expiresIn: "7d" },
+    );
 
     const response = NextResponse.json({
       success: true,
@@ -41,7 +47,7 @@ export async function POST(req: Request) {
     });
 
     response.cookies.set("token", token, {
-      httpOnly: true,
+      httpOnly: true, // ✅ KEEP THIS
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",

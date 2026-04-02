@@ -1,74 +1,70 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import User from "@/models/User";
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import User from "@/models/User";
+import { connectDB } from "@/lib/db";
 
-export const runtime = "nodejs";
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 
-async function getUserFromToken(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
-  if (!token) return null;
-
-  try {
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
-
-    return decoded.id;
-  } catch {
-    return null;
-  }
-}
-
-/* GET current user */
-export async function GET(req: NextRequest) {
-  await connectDB();
-
-  const userId = await getUserFromToken(req);
-
-  if (!userId) {
-    return NextResponse.json(
-      { success: false, message: "Unauthorized" },
-      { status: 401 },
-    );
-  }
-
-  const user = await User.findById(userId).select("-password");
-
-  return NextResponse.json({
-    success: true,
-    user,
-  });
-}
-
-/* UPDATE profile */
-export async function PUT(req: NextRequest) {
+export async function GET() {
   try {
     await connectDB();
 
-    const userId = await getUserFromToken(req);
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
 
-    if (!userId) {
+    if (!token) {
+      return NextResponse.json({ success: false }, { status: 401 });
+    }
+
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+
+    // ✅ FIXED HERE
+    const user = await User.findById(decoded.userId).select("-password");
+
+    if (!user) {
+      return NextResponse.json({ success: false }, { status: 404 });
+    }
+
+    return NextResponse.json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    return NextResponse.json({ success: false }, { status: 401 });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    await connectDB();
+
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 },
       );
     }
 
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+
     const body = await req.json();
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { ...body, profileCompleted: true },
-      { new: true },
-    ).select("-password");
+    // ✅ ALREADY CORRECT HERE
+    const updatedUser = await User.findByIdAndUpdate(decoded.userId, body, {
+      new: true,
+    });
 
     return NextResponse.json({
       success: true,
       user: updatedUser,
     });
   } catch (error) {
-    console.error("Profile update error:", error);
     return NextResponse.json(
-      { success: false, message: "Server error" },
+      { success: false, message: "Profile update failed" },
       { status: 500 },
     );
   }

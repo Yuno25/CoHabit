@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 
 const images = [
-  "/hero/roommate-1.jpg",
-  "/hero/roommate-2.jpg",
-  "/hero/roommate-3.jpg",
-  "/hero/roommate-4.jpg",
+  "/hero/roommate-1.png",
+  "/hero/roommate-2.png",
+  "/hero/roommate-3.png",
+  "/hero/roommate-4.png",
 ];
 
 export default function HeroBackground() {
@@ -15,7 +15,7 @@ export default function HeroBackground() {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % images.length);
-    }, 7000); // 7 seconds per image (smooth like Tinder)
+    }, 6000); // 7 seconds per image (smooth like Tinder)
 
     return () => clearInterval(interval);
   }, []);
@@ -38,7 +38,7 @@ export default function HeroBackground() {
       ))}
 
       {/* VERY LIGHT overlay – prevents washout but keeps sharpness */}
-      <div className="absolute inset-0 bg-blush/40" />
+      <div className="absolute inset-0 " />
     </div>
   );
 }
