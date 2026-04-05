@@ -29,6 +29,7 @@ const UserSchema = new Schema(
 
     gender: {
       type: String,
+      enum: ["male", "female", "other"],
       required: true,
     },
 
@@ -46,11 +47,6 @@ const UserSchema = new Schema(
 
     age: {
       type: Number,
-    },
-
-    gender: {
-      type: String,
-      enum: ["male", "female", "other"],
     },
 
     occupation: {

@@ -17,6 +17,9 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
+    if (!body) {
+      return NextResponse.json({ success: false, message: "No data" });
+    }
 
     const data = await Questionnaire.findOneAndUpdate(
       { userId: user._id },

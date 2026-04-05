@@ -197,21 +197,35 @@ export default function Navbar() {
 
               {open && (
                 <div className="absolute top-12 left-0 w-56 rounded-2xl backdrop-blur-xl bg-white/80 border border-white/30 shadow-xl overflow-hidden">
-                  <DropdownItem
-                    title="Looking for a place"
-                    subtitle="Find rooms & compatible roommates"
-                    onClick={() => handleUserType("renter")}
-                  />
+                  {/* ❌ DISABLED */}
+                  <div className="px-4 py-3 opacity-40 cursor-not-allowed">
+                    <p className="text-sm font-medium text-black">
+                      Looking for a place
+                    </p>
+                    <p className="text-xs text-black cursor-pointer hover:bg-white/40 transition">
+                      Find rooms & compatible roommates (coming soon)
+                    </p>
+                  </div>
+
+                  {/*  ONLY WORKING OPTION */}
                   <DropdownItem
                     title="Looking for a roommate"
                     subtitle="Join someone with a place"
-                    onClick={() => handleUserType("seeker")}
+                    onClick={() => {
+                      setOpen(false);
+                      router.push("/find-roommate"); // CORE FEATURE
+                    }}
                   />
-                  <DropdownItem
-                    title="Have a place"
-                    subtitle="List your place & find roommates"
-                    onClick={() => handleUserType("lister")}
-                  />
+
+                  {/*  DISABLED */}
+                  <div className="px-4 py-3 opacity-40 cursor-not-allowed">
+                    <p className="text-sm font-medium text-black">
+                      Have a place
+                    </p>
+                    <p className="text-xs text-pine/70">
+                      List your place & find roommates (coming soon)
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

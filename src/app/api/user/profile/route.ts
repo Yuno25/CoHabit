@@ -53,16 +53,48 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    // ✅ ALREADY CORRECT HERE
-    const updatedUser = await User.findByIdAndUpdate(decoded.userId, body, {
-      new: true,
-    });
+    //Allow only valid fields (VERY IMPORTANT)
+    const allowedFields = [
+      "name",
+      "city",
+      "bio",
+      "age",
+      "gender",
+      "locality",
+      "smoking",
+      "drinking",
+      "pets",
+      "sleepSchedule",
+      "cleanliness",
+    ];
+
+    const updateData: any = {};
+
+    for (const key of allowedFields) {
+      if (body[key] !== undefined && body[key] !== "" && body[key] !== null) {
+        updateData[key] = body[key];
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      decoded.userId,
+      { $set: updateData },
+      { new: true },
+    );
+
+    if (!updatedUser) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 },
+      );
+    }
 
     return NextResponse.json({
       success: true,
       user: updatedUser,
     });
   } catch (error) {
+    console.error("PROFILE UPDATE ERROR:", error);
     return NextResponse.json(
       { success: false, message: "Profile update failed" },
       { status: 500 },
