@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import ProgressBar from "./ProgressBar";
 import QuestionSlider from "./QuestionSlider";
 import Section from "./Section";
@@ -223,6 +224,7 @@ const questions = [
 const QUESTIONS_PER_PAGE = 5;
 
 export default function QuestionnaireWrapper() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [data, setData] = useState<any>({
     behavior: {},
@@ -317,7 +319,7 @@ export default function QuestionnaireWrapper() {
       return;
     }
 
-    alert("Profile Saved Successfully 🎉");
+    router.push("/find-roommate");
   };
 
   return (
