@@ -33,18 +33,15 @@ export default function FindRoommate() {
     fetchMatches();
   }, []);
 
-  /* ── UI STATES ── */
-
   if (loading) {
     return (
       <div
+        className="find-root"
         style={{
-          minHeight: "100vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
-        className="find-root"
       >
         <p
           style={{
@@ -61,13 +58,12 @@ export default function FindRoommate() {
   if (error) {
     return (
       <div
+        className="find-root"
         style={{
-          minHeight: "100vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
-        className="find-root"
       >
         <p style={{ color: "#fca5a5", fontFamily: "'DM Sans', sans-serif" }}>
           {error}
@@ -122,7 +118,6 @@ export default function FindRoommate() {
           margin: 0;
         }
 
-        /* ── EMPTY STATE ── */
         .empty-state {
           text-align: center;
           margin-top: 80px;
@@ -130,10 +125,9 @@ export default function FindRoommate() {
 
         .empty-state p {
           color: rgba(255,255,255,0.5);
-          font-size: 1rem;
+          font-family: 'DM Sans', sans-serif;
         }
 
-        /* ── LAYOUT ── */
         .find-layout {
           display: grid;
           grid-template-columns: 380px 1fr;
@@ -150,7 +144,7 @@ export default function FindRoommate() {
         .swipe-stack {
           position: relative;
           width: 340px;
-          height: 520px;
+          height: 540px;
           margin-bottom: 24px;
         }
 
@@ -161,7 +155,7 @@ export default function FindRoommate() {
           left: 50%;
           transform: translateX(-50%) rotate(-4deg);
           width: 320px;
-          height: 500px;
+          height: 520px;
           background: rgba(40,0,8,0.6);
           border-radius: 28px;
           z-index: 0;
@@ -174,7 +168,7 @@ export default function FindRoommate() {
           left: 50%;
           transform: translateX(-50%) rotate(-2deg);
           width: 330px;
-          height: 510px;
+          height: 530px;
           background: rgba(50,0,10,0.65);
           border-radius: 28px;
           z-index: 1;
@@ -193,7 +187,7 @@ export default function FindRoommate() {
         }
 
         .swipe-card-image {
-          height: 220px;
+          height: 200px;
           background: rgba(40,0,8,0.8);
           display: flex;
           align-items: center;
@@ -209,8 +203,8 @@ export default function FindRoommate() {
         }
 
         .swipe-card-avatar {
-          width: 90px;
-          height: 90px;
+          width: 80px;
+          height: 80px;
           border-radius: 50%;
           background: rgba(0,0,0,0.3);
           border: 3px solid rgba(255,255,255,0.15);
@@ -221,7 +215,7 @@ export default function FindRoommate() {
 
         .swipe-card-avatar-letter {
           font-family: 'DM Serif Display', serif;
-          font-size: 2.5rem;
+          font-size: 2.2rem;
           color: rgba(255,255,255,0.7);
         }
 
@@ -232,12 +226,61 @@ export default function FindRoommate() {
           background: linear-gradient(to top, rgba(60,0,10,0.85), transparent);
         }
 
+        /* ── DEALBREAKER FLASH NOTE ── */
+        .dealbreaker-note {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          margin: 0 16px;
+          padding: 8px 12px;
+          background: rgba(180, 40, 40, 0.25);
+          border: 1px solid rgba(255, 100, 100, 0.25);
+          border-radius: 10px;
+          flex-shrink: 0;
+        }
+
+        .dealbreaker-note-icon {
+          font-size: 0.85rem;
+          flex-shrink: 0;
+          margin-top: 1px;
+        }
+
+        .dealbreaker-note-text {
+          font-size: 0.75rem;
+          color: rgba(255, 180, 180, 0.95);
+          line-height: 1.4;
+        }
+
+        .dealbreaker-note-text strong {
+          display: block;
+          font-weight: 600;
+          margin-bottom: 2px;
+          color: rgba(255, 200, 200, 1);
+        }
+
+        .dealbreaker-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          margin-top: 4px;
+        }
+
+        .dealbreaker-tag {
+          font-size: 0.68rem;
+          padding: 2px 8px;
+          background: rgba(255,80,80,0.15);
+          border: 1px solid rgba(255,100,100,0.2);
+          border-radius: 20px;
+          color: rgba(255,180,180,0.9);
+        }
+
+        /* ── CARD BODY ── */
         .swipe-card-body {
-          padding: 20px 22px;
+          padding: 14px 22px;
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 10px;
         }
 
         .swipe-name-row {
@@ -248,27 +291,27 @@ export default function FindRoommate() {
 
         .swipe-name {
           font-family: 'DM Serif Display', serif;
-          font-size: 1.6rem;
+          font-size: 1.5rem;
           color: #fff;
           margin: 0;
           line-height: 1.1;
         }
 
         .swipe-age-gender {
-          font-size: 0.85rem;
+          font-size: 0.82rem;
           color: rgba(255,255,255,0.45);
           font-weight: 300;
         }
 
         .swipe-location {
-          font-size: 0.8rem;
+          font-size: 0.78rem;
           color: rgba(255,255,255,0.4);
         }
 
         .swipe-location::before { content: '📍 '; }
 
         .swipe-bio {
-          font-size: 0.83rem;
+          font-size: 0.8rem;
           color: rgba(255,255,255,0.55);
           line-height: 1.5;
           font-weight: 300;
@@ -286,10 +329,10 @@ export default function FindRoommate() {
         }
 
         .swipe-tag {
-          padding: 4px 12px;
+          padding: 3px 10px;
           background: rgba(0,0,0,0.25);
           border-radius: 20px;
-          font-size: 0.72rem;
+          font-size: 0.7rem;
           color: rgba(255,255,255,0.65);
           font-weight: 500;
         }
@@ -299,11 +342,11 @@ export default function FindRoommate() {
           display: flex;
           align-items: center;
           gap: 10px;
-          padding: 10px 22px 16px;
+          padding: 8px 22px 14px;
         }
 
         .match-bar-label {
-          font-size: 0.72rem;
+          font-size: 0.7rem;
           color: rgba(255,255,255,0.3);
           text-transform: uppercase;
           letter-spacing: 1px;
@@ -446,7 +489,6 @@ export default function FindRoommate() {
           transform: translateY(-1px);
         }
 
-        /* MATCH LIST PILLS */
         .match-list {
           display: flex;
           flex-direction: column;
@@ -470,11 +512,22 @@ export default function FindRoommate() {
         .match-pill:hover { background: rgba(60,0,10,0.7); }
         .match-pill.active { background: rgba(80,0,15,0.8); }
 
+        .match-pill-left {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
         .match-pill-name {
           font-size: 0.875rem;
           color: #fff;
           font-weight: 500;
           font-family: 'DM Sans', sans-serif;
+        }
+
+        .match-pill-warning {
+          font-size: 0.7rem;
+          color: rgba(255, 160, 160, 0.8);
         }
 
         .match-pill-pct {
@@ -487,13 +540,11 @@ export default function FindRoommate() {
 
       <div className="find-root">
         <div className="find-inner">
-          {/* HEADER */}
           <div className="find-header">
             <h1>Find Your Roommate</h1>
             <p>Matched based on your compatibility questionnaire</p>
           </div>
 
-          {/* EMPTY */}
           {matches.length === 0 ? (
             <div className="empty-state">
               <p>No matches found 😕</p>
@@ -516,6 +567,27 @@ export default function FindRoommate() {
                       </div>
                       <div className="swipe-card-gradient" />
                     </div>
+
+                    {/* ── DEALBREAKER FLASH NOTE ── */}
+                    {user?.conflictCount > 0 && (
+                      <div className="dealbreaker-note">
+                        <span className="dealbreaker-note-icon">⚠️</span>
+                        <div className="dealbreaker-note-text">
+                          <strong>
+                            {user.conflictCount === 1
+                              ? "1 of your dealbreakers"
+                              : `${user.conflictCount} of your dealbreakers`}
+                          </strong>
+                          <div className="dealbreaker-tags">
+                            {user.conflictList.map((c: string, i: number) => (
+                              <span key={i} className="dealbreaker-tag">
+                                {c}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Body */}
                     <div className="swipe-card-body">
@@ -576,7 +648,7 @@ export default function FindRoommate() {
                 {/* Actions */}
                 <div className="swipe-actions">
                   <button
-                    className="action-btn text-white"
+                    className="action-btn"
                     onClick={handleSkip}
                     title="Skip"
                   >
@@ -590,7 +662,7 @@ export default function FindRoommate() {
                     onClick={handleLike}
                     title="Like"
                   >
-                    ✓
+                    ♥
                   </button>
                 </div>
 
@@ -601,13 +673,11 @@ export default function FindRoommate() {
 
               {/* RIGHT PANEL */}
               <div className="right-panel">
-                {/* Big match % */}
                 <div>
                   <p className="match-label-big">{user?.match ?? 0}%</p>
                   <p className="match-sublabel">{getLabel(user?.match ?? 0)}</p>
                 </div>
 
-                {/* Lifestyle details */}
                 <div className="detail-card">
                   <p className="detail-card-title">Lifestyle Details</p>
                   <div className="detail-grid">
@@ -648,10 +718,8 @@ export default function FindRoommate() {
                   </div>
                 </div>
 
-                {/* View profile button */}
                 <button className="view-btn">View Full Profile</button>
 
-                {/* All matches list */}
                 <div className="detail-card">
                   <p className="detail-card-title">All Matches</p>
                   <div className="match-list">
@@ -661,7 +729,15 @@ export default function FindRoommate() {
                         className={`match-pill ${i === current ? "active" : ""}`}
                         onClick={() => setCurrent(i)}
                       >
-                        <span className="match-pill-name">{m.name}</span>
+                        <div className="match-pill-left">
+                          <span className="match-pill-name">{m.name}</span>
+                          {m.conflictCount > 0 && (
+                            <span className="match-pill-warning">
+                              ⚠️ {m.conflictCount} conflict
+                              {m.conflictCount > 1 ? "s" : ""}
+                            </span>
+                          )}
+                        </div>
                         <span className="match-pill-pct">{m.match}%</span>
                       </button>
                     ))}

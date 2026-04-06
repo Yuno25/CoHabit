@@ -18,7 +18,7 @@ export default function Navbar() {
   // Auth and sidebar state
   const [isAuthed, setIsAuthed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   // Logged in user
   const [user, setUser] = useState<{ name?: string } | null>(null);
 
@@ -85,6 +85,7 @@ export default function Navbar() {
         setSidebarOpen(false);
         setSearchOpen(false);
         setOpen(false);
+        setMobileMenuOpen(false);
       }
     };
 
@@ -128,15 +129,23 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/70 border-b border-white/20 transition-all duration-300">
         <div className="w-full px-6 py-3 flex items-center">
           {/* LEFT */}
-          <div className="flex-1 flex items-center">
+          <div className="flex-1 flex items-center gap-3">
             <Link
               href="/"
-              className="font-semibold text-pine text-lg tracking-wide 
-        transition-all duration-300 ease-in-out 
-        hover:scale-105 hover:text-rose cursor-pointer"
+              className="font-semibold text-black text-lg tracking-wide 
+      transition-all duration-300 ease-in-out 
+      hover:scale-105 hover:text-rose cursor-pointer"
             >
               CoHabit
             </Link>
+
+            {/*Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden text-pine"
+            >
+              ☰
+            </button>
           </div>
 
           {/* CENTER */}
@@ -197,7 +206,6 @@ export default function Navbar() {
 
               {open && (
                 <div className="absolute top-12 left-0 w-56 rounded-2xl backdrop-blur-xl bg-white/80 border border-white/30 shadow-xl overflow-hidden">
-                  {/* ❌ DISABLED */}
                   <div className="px-4 py-3 opacity-40 cursor-not-allowed">
                     <p className="text-sm font-medium text-black">
                       Looking for a place
@@ -207,17 +215,18 @@ export default function Navbar() {
                     </p>
                   </div>
 
-                  {/*  ONLY WORKING OPTION */}
                   <DropdownItem
                     title="Looking for a roommate"
                     subtitle="Join someone with a place"
-                    onClick={() => {
-                      setOpen(false);
-                      router.push("/find-roommate"); // CORE FEATURE
+                    onClick={(e?: any) => {
+                      e?.stopPropagation();
+                      router.push("/find-roommate");
+                      setTimeout(() => {
+                        setOpen(false);
+                        setMobileMenuOpen(false);
+                      }, 50);
                     }}
                   />
-
-                  {/*  DISABLED */}
                   <div className="px-4 py-3 opacity-40 cursor-not-allowed">
                     <p className="text-sm font-medium text-black">
                       Have a place
@@ -239,7 +248,7 @@ export default function Navbar() {
           </div>
 
           {/* RIGHT */}
-          <div className="flex-1 flex justify-end items-center">
+          <div className="flex-1 flex justify-end items-center gap-3">
             {!isAuthed ? (
               <div className="flex items-center gap-5 text-sm">
                 <Link
@@ -260,8 +269,8 @@ export default function Navbar() {
               <button
                 onClick={() => setSidebarOpen(true)}
                 className="w-10 h-10 rounded-full bg-wine text-blush flex items-center justify-center font-semibold
-          transition-all duration-300 ease-in-out
-          hover:scale-110 hover:ring-2 hover:ring-rose hover:shadow-lg"
+        transition-all duration-300 ease-in-out
+        hover:scale-110 hover:ring-2 hover:ring-rose hover:shadow-lg"
               >
                 {getInitial(user?.name)}
               </button>
@@ -269,7 +278,94 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            {/* Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/30 z-40 md:hidden"
+            />
 
+            {/* Bottom Sheet */}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              className="fixed bottom-0 left-0 w-full z-50 bg-white rounded-t-3xl p-6 flex flex-col gap-5 md:hidden shadow-2xl"
+            >
+              {/* Drag Indicator */}
+              <div className="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-2" />
+
+              {/* HOME */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/");
+                  setTimeout(() => setMobileMenuOpen(false), 50);
+                }}
+                className="text-left text-lg active:scale-95 transition"
+              >
+                Home
+              </button>
+
+              {/* SEARCH LOCALITY */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSearch("locality");
+                }}
+                className="text-left text-lg active:scale-95 transition"
+              >
+                Search by Locality
+              </button>
+
+              {/* SEARCH COLLEGE */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSearch("college");
+                }}
+                className="text-left text-lg active:scale-95 transition"
+              >
+                Search by College
+              </button>
+
+              {/* FIND ROOMMATE (FIXED 🔥) */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+
+                  router.push("/find-roommate"); // ✅ FIRST
+
+                  setTimeout(() => {
+                    setMobileMenuOpen(false); // ✅ THEN CLOSE
+                  }, 50);
+                }}
+                className="text-left text-lg active:scale-95 transition"
+              >
+                Looking for a roommate
+              </button>
+
+              {/* TERMS */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push("/terms");
+                  setTimeout(() => setMobileMenuOpen(false), 50);
+                }}
+                className="text-left text-lg active:scale-95 transition"
+              >
+                Terms
+              </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {sidebarOpen && (
           <>
